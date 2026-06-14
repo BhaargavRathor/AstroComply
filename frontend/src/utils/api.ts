@@ -1,4 +1,4 @@
-const API_BASE = process.env.NEXT_PUBLIC_MOSIP_API_BASE ?? "http://localhost:8000";
+const API_BASE = process.env.NEXT_PUBLIC_MOSIP_API_BASE ?? "https://mosip-backend-k55f.onrender.com";
 
 type FetchOptions = RequestInit & {
   timeoutMs?: number;
