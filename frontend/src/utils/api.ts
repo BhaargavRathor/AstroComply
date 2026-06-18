@@ -174,3 +174,120 @@ export async function askRegulation(query: string, limit = 5) {
     { timeoutMs: 45000 },
   );
 }
+
+// ── UiPath Orchestration API helpers ──────────────────────────────────────────
+
+export type UiPathJobSubmitRequest = {
+  operator_id: string;
+  object_name: string;
+  altitude_km?: number;
+  inclination?: number;
+  eccentricity?: number;
+  raan?: number;
+  arg_of_perigee?: number;
+  mean_motion?: number;
+  debris_density?: number;
+  conjunction_frequency?: number;
+  risk_threshold?: number;
+};
+
+export type UiPathJobStatusPayload = {
+  job_id: string;
+  operator_id: string;
+  object_name: string;
+  status: "PENDING" | "RUNNING" | "ACTION_CENTER" | "APPROVED" | "ESCALATED" | "FAILED";
+  risk_score: number | null;
+  risk_level: string | null;
+  violations: string[] | null;
+  failed_requirements: string[] | null;
+  passed_requirements: string[] | null;
+  report: string | null;
+  created_at: string;
+  updated_at: string;
+  sla_expires_at: string | null;
+  risk_threshold: number;
+  result: Record<string, any> | null;
+  errors: string[];
+  escalation_reason: string | null;
+  raw_params: Record<string, any>;
+};
+
+export type SapFeePayload = {
+  operator_id: string;
+  status: "PAID" | "UNPAID";
+  balance: number;
+  fee_amount: number;
+  payment_verified: boolean;
+};
+
+export type RegisterAssetRequest = {
+  job_id: string;
+  operator_id: string;
+  object_name: string;
+  orbit_type: string;
+  altitude_km: number;
+};
+
+export type RegisterAssetPayload = {
+  status: "SUCCESS" | "FAILED";
+  registration_id: string;
+  registered_at: string;
+  asset_details: RegisterAssetRequest;
+};
+
+export type EscalatePayload = {
+  status: "ESCALATED";
+  job_id: string;
+  maneuvers_executed: boolean;
+  maneuver_details: string[];
+  updated_at: string;
+};
+
+export async function submitUiPathJob(payload: UiPathJobSubmitRequest) {
+  return requestJson<{ job_id: string; status: string; message: string; created_at: string }>(
+    "/uipath/job/submit",
+    {
+      method: "POST",
+      body: JSON.stringify(payload),
+      timeoutMs: 15000,
+    }
+  );
+}
+
+export async function getUiPathJobStatus(jobId: string) {
+  return requestJson<UiPathJobStatusPayload>(`/uipath/job/status/${encodeURIComponent(jobId)}`, {
+    timeoutMs: 15000,
+  });
+}
+
+export async function approveUiPathJob(jobId: string) {
+  return requestJson<{ status: string; job_id: string; message: string; updated_at: string }>(
+    `/uipath/job/approve/${encodeURIComponent(jobId)}`,
+    {
+      method: "POST",
+      timeoutMs: 15000,
+    }
+  );
+}
+
+export async function checkUiPathSapFee(operatorId: string) {
+  return requestJson<SapFeePayload>(`/uipath/sap/check-fee/${encodeURIComponent(operatorId)}`, {
+    timeoutMs: 15000,
+  });
+}
+
+export async function registerUiPathAsset(payload: RegisterAssetRequest) {
+  return requestJson<RegisterAssetPayload>("/uipath/sap/register-asset", {
+    method: "POST",
+    body: JSON.stringify(payload),
+    timeoutMs: 15000,
+  });
+}
+
+export async function escalateUiPathJob(jobId: string, reason = "SLA Breach / Unresolved Risk") {
+  return requestJson<EscalatePayload>("/uipath/escalate", {
+    method: "POST",
+    body: JSON.stringify({ job_id: jobId, reason }),
+    timeoutMs: 15000,
+  });
+}

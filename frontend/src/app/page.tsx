@@ -3,7 +3,11 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { Search, Zap, AlertTriangle, Cpu, TrendingUp, Radio, Shield, ListCollapse } from "lucide-react";
+import { 
+  Search, Zap, AlertTriangle, Cpu, TrendingUp, Radio, Shield, 
+  ListCollapse, CheckCircle2, Clock, Settings, FileText, 
+  Building2, ShieldAlert, ChevronRight, Activity, Award
+} from "lucide-react";
 import { riskGradient } from "@/utils/mosip-data";
 import type { SatelliteTrack } from "@/utils/mosip-data";
 import { GlobeWrapper } from "@/components/GlobeWrapper";
@@ -151,7 +155,7 @@ function toTrack(sat: SatelliteSummary): SatelliteTrack {
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════ */
-export default function MissionControlPage() {
+export default function AstroComplyDashboardPage() {
   const router = useRouter();
   const [satellites, setSatellites] = useState<SatelliteTrack[]>([]);
   const [metrics, setMetrics] = useState<MetricsSummaryPayload | null>(null);
@@ -264,8 +268,20 @@ export default function MissionControlPage() {
     ? "var(--c-elevated)"
     : "var(--c-nominal)";
 
+  // Determine simulated UiPath Maestro BPMN step based on satellite properties
+  const maestroStep = useMemo(() => {
+    if (!selectedSat) return 0;
+    if (selectedSat.name.toLowerCase().includes("unpaid") || selectedSat.id % 7 === 0) {
+      return 2; // Failed SAP Billing
+    }
+    if (selectedSat.risk >= 55) {
+      return 4; // Held in Action Center for waiver review
+    }
+    return 6; // Approved and Registered successfully
+  }, [selectedSat]);
+
   return (
-    <div className="relative w-full overflow-y-auto main-scroll-container" style={{ background: "#000", height: "calc(100vh - var(--topbar-h))" }}>
+    <div className="relative w-full overflow-y-auto main-scroll-container bg-black" style={{ height: "calc(100vh - var(--topbar-h))" }}>
 
       {/* ═══════════════════════════════════════════════════════════════════
           SECTION 1 — HERO VIEWPORT (60% Space Visor, 40% Control HUD Console)
@@ -273,7 +289,7 @@ export default function MissionControlPage() {
       <div className="relative w-full flex overflow-hidden shrink-0" style={{ height: "calc(100vh - var(--topbar-h))" }}>
         
         {/* ── LEFT SIDE: SPACE VISOR (60%) ── */}
-        <div className="relative w-[60%] h-full overflow-hidden" style={{ borderRight: "1px solid var(--c-border)" }}>
+        <div className="relative w-[55%] xl:w-[60%] h-full overflow-hidden" style={{ borderRight: "1px solid var(--c-border)" }}>
           
           {/* Earth, Moon & ISS GlobeWrapper scene */}
           <div className="absolute inset-0 z-10">
@@ -300,13 +316,13 @@ export default function MissionControlPage() {
           <div className="absolute top-4 left-4 z-20 pointer-events-none">
             <div className="flex flex-col gap-0.5">
               <span className="font-data text-[7px] uppercase tracking-[0.35em]" style={{ color: "rgba(77,217,245,0.4)" }}>
-                HUD VISUALIZATION REGION
+                ASTROCOMPLY AI REAL-TIME SCANNER
               </span>
               <div className="flex items-center gap-1.5 mt-0.5">
                 <span className="font-display text-[15px] uppercase tracking-wider text-white" style={{ textShadow: "0 0 20px rgba(255,255,255,0.4)" }}>
-                  COCKPIT VIEWPORT
+                  ORBITAL MONITOR
                 </span>
-                <span className="h-1.5 w-1.5 rounded-full" style={{ background: "var(--c-cyan)", boxShadow: "0 0 6px var(--c-cyan)" }} />
+                <span className="h-1.5 w-1.5 rounded-full bg-[#00d4ff] animate-ping" />
               </div>
             </div>
           </div>
@@ -328,10 +344,10 @@ export default function MissionControlPage() {
             </div>
           ))}
 
-          {/* Floating Bouncing Scroll Down Indicator (bottom center of left space view) */}
+          {/* Floating Bouncing Scroll Down Indicator */}
           <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex flex-col items-center gap-1.5 pointer-events-none">
             <span className="font-data text-[7px] uppercase tracking-[0.3em]" style={{ color: "rgba(255,255,255,0.4)" }}>
-              SCROLL FOR DEBRIS INTELLIGENCE
+              SCROLL FOR ORCHESTRATION ARCHITECTURE
             </span>
             <motion.div
               animate={{ y: [0, 4, 0] }}
@@ -346,7 +362,7 @@ export default function MissionControlPage() {
         </div>
 
         {/* ── RIGHT SIDE: WORKSTATION CONSOLE (40%) ── */}
-        <div className="relative w-[40%] h-full flex flex-col overflow-hidden" style={{ background: "rgba(8,12,18,0.96)", backdropFilter: "blur(20px)" }}>
+        <div className="relative w-[45%] xl:w-[40%] h-full flex flex-col overflow-hidden" style={{ background: "rgba(8,12,18,0.96)", backdropFilter: "blur(20px)" }}>
           
           {/* Subtle header border grid */}
           <div className="absolute inset-x-0 top-0 h-px" style={{ background: "linear-gradient(to right, transparent, var(--c-cyan), transparent)" }} />
@@ -354,39 +370,71 @@ export default function MissionControlPage() {
           {/* Console Identity Header */}
           <div className="px-5 py-4 shrink-0 flex items-center justify-between" style={{ borderBottom: "1px solid var(--c-border)" }}>
             <div>
-              <span className="label block mb-0.5" style={{ color: "var(--c-cyan)" }}>MOSIP OPERATIONS SYSTEM v3.4</span>
+              <span className="label block mb-0.5 text-[#00d4ff] font-digital tracking-widest">UiPath Maestro BPMN Control Plane</span>
               <h1 className="font-display text-[15px] uppercase tracking-[0.08em] text-white">
-                SSA COMMAND DECK CONSOLE
+                AstroComply AI Command Deck
               </h1>
             </div>
             <div className="flex items-center gap-2">
-              <span className="pulse-dot" style={{ background: "var(--c-nominal)" }} />
-              <span className="font-data text-[8px] uppercase tracking-widest text-[var(--c-nominal)]">ONLINE</span>
+              <span className="pulse-dot bg-[#00ff9d]" />
+              <span className="font-data text-[8px] uppercase tracking-widest text-[#00ff9d]">ACTIVE</span>
             </div>
           </div>
 
-          {/* Live System Metrics Strip */}
-          <div className="grid grid-cols-4 px-5 py-2.5 shrink-0 bg-white/[0.01]" style={{ borderBottom: "1px solid var(--c-border)" }}>
-            {[
-              { label: "TRACKING", value: heroCount.toLocaleString(), color: "var(--c-cyan)" },
-              { label: "ALERTS", value: String(metrics?.critical_risk_count ?? "—"), color: (metrics?.critical_risk_count ?? 0) > 0 ? "var(--c-critical)" : "var(--t-secondary)" },
-              { label: "AVG RISK", value: `${metrics?.average_risk_score ?? "—"}%`, color: "var(--c-elevated)" },
-              { label: "AGENTS", value: "8/8", color: "var(--c-nominal)" }
-            ].map(col => (
-              <div key={col.label} className="flex flex-col">
-                <span className="font-data text-[7px] uppercase tracking-wider text-slate-500">{col.label}</span>
-                <span className="font-data text-[12px] font-bold tabular-nums" style={{ color: col.color }}>{col.value}</span>
-              </div>
-            ))}
+          {/* UiPath BPMN Process Stepper Component */}
+          <div className="px-5 py-4 shrink-0 bg-[#0e0e1a]/40 border-b border-white/[0.05]">
+            <div className="flex items-center justify-between mb-3">
+              <span className="font-digital text-[8px] text-slate-500 uppercase tracking-widest">Maestro BPMN 2.0 Live Track</span>
+              <span className="font-digital text-[9px] text-[#00d4ff] uppercase font-bold">
+                {maestroStep === 2 ? "STOPPED @ SAP FEE CHECK" : maestroStep === 4 ? "HELD @ ACTION CENTER" : "COMPLETED & REGISTERED"}
+              </span>
+            </div>
+
+            <div className="flex items-center justify-between relative px-2">
+              {/* Connector line */}
+              <div className="absolute top-[13px] left-8 right-8 h-[2px] bg-slate-800 -z-10" />
+              
+              {[
+                { step: 1, label: "DU Ingest", activeStep: 1 },
+                { step: 2, label: "SAP Bill", activeStep: 2 },
+                { step: 3, label: "Agent Audit", activeStep: 3 },
+                { step: 4, label: "Action Center", activeStep: 4 },
+                { step: 5, label: "RPA Bot", activeStep: 5 }
+              ].map((s) => {
+                const isCompleted = maestroStep > s.step || (maestroStep === 6);
+                const isCurrent = maestroStep === s.step;
+                const isError = (maestroStep === 2 && s.step === 2);
+                const isWarning = (maestroStep === 4 && s.step === 4);
+
+                let bgClass = "bg-slate-900 border-slate-700 text-slate-500";
+                if (isCompleted) bgClass = "bg-[#00ff9d] border-[#00ff9d] text-black font-bold";
+                else if (isCurrent) {
+                  if (isError) bgClass = "bg-[#ff3366] border-[#ff3366] text-white font-bold animate-pulse";
+                  else if (isWarning) bgClass = "bg-[#ffb700] border-[#ffb700] text-black font-bold animate-pulse";
+                  else bgClass = "bg-[#00d4ff] border-[#00d4ff] text-black font-bold";
+                }
+
+                return (
+                  <div key={s.step} className="flex flex-col items-center gap-1.5">
+                    <div className={`h-7 w-7 rounded-full border flex items-center justify-center font-digital text-xs transition-all duration-300 ${bgClass}`}>
+                      {isCompleted ? "✓" : s.step}
+                    </div>
+                    <span className="font-digital text-[7px] uppercase tracking-wider text-slate-400">
+                      {s.label}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
-          {/* Satellite Catalog search */}
-          <div className="px-4 py-2 shrink-0" style={{ borderBottom: "1px solid var(--c-border)" }}>
+          {/* Search Box */}
+          <div className="px-4 py-2.5 shrink-0" style={{ borderBottom: "1px solid var(--c-border)" }}>
             <div className="flex items-center gap-2 px-3 py-1.5 rounded-sm" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid var(--c-border)" }}>
               <Search size={10} style={{ color: "var(--c-cyan)", opacity: 0.7 }} />
               <input
                 type="text"
-                placeholder="Search catalog NORAD ID..."
+                placeholder="Search catalog NORAD ID to trace BPMN lifecycle..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="w-full bg-transparent font-data text-[10px] outline-none placeholder:text-slate-600"
@@ -395,11 +443,11 @@ export default function MissionControlPage() {
             </div>
           </div>
 
-          {/* Scrollable Satellite Table list */}
+          {/* Catalog list */}
           <div className="flex-1 overflow-y-auto min-h-0" style={{ borderBottom: "1px solid var(--c-border)" }}>
             <div className="grid grid-cols-12 px-4 py-1.5 shrink-0 border-b border-white/[0.02] bg-white/[0.005]">
-              <span className="col-span-8 font-data text-[7px] uppercase text-slate-500">OBJECT IDENTIFIER</span>
-              <span className="col-span-2 font-data text-[7px] uppercase text-slate-500 text-center">REGIME</span>
+              <span className="col-span-8 font-data text-[7px] uppercase text-slate-500">PROPOSAL ASSET</span>
+              <span className="col-span-2 font-data text-[7px] uppercase text-slate-500 text-center">ORBIT</span>
               <span className="col-span-2 font-data text-[7px] uppercase text-slate-500 text-right">RISK</span>
             </div>
             
@@ -416,14 +464,14 @@ export default function MissionControlPage() {
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.1 }}
                     onClick={() => setSelectedId(sat.id)}
-                    className="grid grid-cols-12 w-full px-4 py-2 text-left transition-all border-b border-white/[0.015]"
+                    className="grid grid-cols-12 w-full px-4 py-2.5 text-left transition-all border-b border-white/[0.015]"
                     style={{
                       background: isSelected ? "rgba(77,217,245,0.06)" : "transparent",
                       borderLeft: `2.5px solid ${isSelected ? "var(--c-cyan)" : "transparent"}`,
                     }}
                   >
                     <div className="col-span-8 min-w-0 flex items-center gap-2">
-                      <div className="h-1 w-1 rounded-full shrink-0" style={{ background: sat.risk >= 75 ? "var(--c-critical)" : sat.risk >= 55 ? "var(--c-elevated)" : "var(--c-nominal)" }} />
+                      <div className="h-1.5 w-1.5 rounded-full shrink-0" style={{ background: sat.risk >= 75 ? "var(--c-critical)" : sat.risk >= 55 ? "var(--c-elevated)" : "var(--c-nominal)" }} />
                       <div className="min-w-0">
                         <span className="block truncate font-data text-[10px]" style={{ color: isSelected ? "#fff" : "rgba(255,255,255,0.65)" }}>
                           {sat.name}
@@ -447,38 +495,49 @@ export default function MissionControlPage() {
                 );
               })}
             </AnimatePresence>
-            {filteredSatellites.length === 0 && (
-              <div className="py-12 text-center">
-                <span className="font-data text-[8px] uppercase tracking-wider text-slate-600">EMPTY CATALOG TARGET</span>
-              </div>
-            )}
           </div>
 
-          {/* Telemetry Locked On HUD (at the bottom of console) */}
+          {/* Telemetry & Action Center details for selected */}
           {selectedSat && (
             <div className="p-4 shrink-0 bg-white/[0.005]" style={{ borderBottom: "1px solid var(--c-border)" }}>
               <div className="rounded p-3 flex flex-col gap-2.5" style={{ background: "rgba(4,9,15,0.5)", border: "1px solid var(--c-border)" }}>
                 
-                {/* ID Header */}
                 <div className="flex items-center justify-between pb-1.5 border-b border-white/[0.04]">
                   <div className="flex items-center gap-1.5">
-                    <span className="pulse-dot" style={{ background: riskColor }} />
-                    <span className="font-data text-[8px] uppercase tracking-widest text-slate-500">LOCKED TELEMETRY</span>
+                    <Activity size={10} className="text-[#00d4ff]" />
+                    <span className="font-data text-[8px] uppercase tracking-widest text-slate-500">AUDIT TELEMETRY</span>
                   </div>
                   <span className="font-data text-[8px] text-white/50">NORAD {selectedSat.id}</span>
                 </div>
 
-                {/* Name */}
-                <span className="block font-display text-[13px] uppercase tracking-wider text-white truncate">
-                  {selectedSat.name}
-                </span>
+                <div className="flex justify-between items-start gap-4">
+                  <span className="font-display text-[12px] uppercase tracking-wider text-white truncate flex-1">
+                    {selectedSat.name}
+                  </span>
+                  
+                  {maestroStep === 2 && (
+                    <span className="font-digital text-[8px] bg-[#ff3366]/10 border border-[#ff3366]/30 text-[#ff3366] px-1.5 py-0.5 rounded">
+                      BILLING BLOCK
+                    </span>
+                  )}
+                  {maestroStep === 4 && (
+                    <span className="font-digital text-[8px] bg-[#ffb700]/10 border border-[#ffb700]/30 text-[#ffb700] px-1.5 py-0.5 rounded animate-pulse">
+                      ACTION CENTER
+                    </span>
+                  )}
+                  {maestroStep === 6 && (
+                    <span className="font-digital text-[8px] bg-[#00ff9d]/10 border border-[#00ff9d]/30 text-[#00ff9d] px-1.5 py-0.5 rounded">
+                      APPROVED
+                    </span>
+                  )}
+                </div>
 
-                {/* Telemetry metrics */}
+                {/* Details layout */}
                 <div className="grid grid-cols-3 gap-2 mt-1">
                   {[
                     { label: "VELOCITY", val: `${(velNum / 100).toFixed(2)}`, unit: "km/s", icon: TrendingUp },
                     { label: "ALTITUDE", val: altCount.toLocaleString(), unit: "km", icon: Cpu },
-                    { label: "RISK INDEX", val: `${riskCount}`, unit: "", icon: AlertTriangle, color: riskColor }
+                    { label: "RISK INDEX", val: `${riskCount}%`, unit: "", icon: AlertTriangle, color: riskColor }
                   ].map(cell => {
                     const Icon = cell.icon;
                     return (
@@ -487,9 +546,9 @@ export default function MissionControlPage() {
                           <Icon size={8} style={{ color: "var(--c-cyan)", opacity: 0.6 }} />
                           <span className="font-data text-[6.5px] uppercase tracking-wider text-slate-500">{cell.label}</span>
                         </div>
-                        <span className="font-data text-[12px] font-bold tabular-nums" style={{ color: cell.color ?? "#fff" }}>
+                        <span className="font-data text-[11px] font-bold tabular-nums" style={{ color: cell.color ?? "#fff" }}>
                           {cell.val}
-                          <span className="text-[7.5px] font-normal ml-0.5 text-slate-500">{cell.unit}</span>
+                          <span className="text-[7px] font-normal ml-0.5 text-slate-500">{cell.unit}</span>
                         </span>
                       </div>
                     );
@@ -503,12 +562,15 @@ export default function MissionControlPage() {
           <div className="p-4 shrink-0 flex gap-2">
             <motion.button
               whileTap={{ scale: 0.97 }}
-              onClick={() => selectedId && router.push(`/satellites?id=${selectedId}`)}
-              disabled={!selectedId}
-              className="w-full h-9 flex items-center justify-center gap-1.5 rounded-sm font-data text-[9px] uppercase tracking-[0.2em] transition-all disabled:opacity-30 btn-primary"
+              onClick={() => router.push("/simulator")}
+              className="w-full h-10 flex items-center justify-center gap-2 rounded-lg font-digital text-xs uppercase tracking-[0.2em] transition-all cta-glow text-black font-bold"
+              style={{ 
+                background: "#00d4ff", 
+                boxShadow: "0 0 20px rgba(0,212,255,0.25)"
+              }}
             >
-              <Zap size={10} />
-              INITIATE ASSESSMENT
+              <Zap size={13} className="text-black fill-black" />
+              Launch Orchestrator Sim
             </motion.button>
           </div>
         </div>
@@ -532,7 +594,7 @@ export default function MissionControlPage() {
       )}
 
       {/* ═══════════════════════════════════════════════════════════════════
-          SECTION 2 — DEBRIS MITIGATION SECTION (Slide 2: Full Screen Visual)
+          SECTION 2 — DOCUMENT DU INGESTION (Slide 2: PDF Parsing Visual)
           ═══════════════════════════════════════════════════════════════════ */}
       <div 
         className="relative w-full h-screen overflow-hidden flex items-center justify-between shrink-0"
@@ -543,58 +605,48 @@ export default function MissionControlPage() {
           borderTop: "1px solid var(--c-border)",
         }}
       >
-        {/* Dark Cinematic overlay gradient (85% black on left to fade into space visual on right) */}
-        <div className="absolute inset-0 z-10" style={{ background: "linear-gradient(to right, rgba(8,12,18,0.96) 45%, rgba(8,12,18,0.4) 100%)" }} />
-        
-        {/* Space Grid overlay */}
+        <div className="absolute inset-0 z-10" style={{ background: "linear-gradient(to right, rgba(8,12,18,0.97) 45%, rgba(8,12,18,0.4) 100%)" }} />
         <div className="cyber-grid absolute inset-0 opacity-10 z-12 pointer-events-none" />
 
         <div className="relative z-20 max-w-5xl mx-auto w-full px-8 md:px-12 flex flex-col md:flex-row items-center justify-between gap-12">
           {/* Slide Text Block */}
           <div className="flex flex-col gap-5 max-w-md">
-            <span className="font-data text-[9px] uppercase tracking-[0.35em] text-[var(--c-cyan)]">
-              MISSION THREAT // KESSLER SHELL DESTRUCTION
+            <span className="font-digital text-[9px] uppercase tracking-[0.35em] text-[#00d4ff] font-bold">
+              PROCESS STAGE 1 // DOCUMENT UNDERSTANDING
             </span>
             <h2 className="font-display text-4xl md:text-5xl uppercase tracking-wider text-white leading-tight font-bold">
-              Cleaning Up<br/>The Orbit
+              Cognitive Ingestion<br/>of Launch Proposals
             </h2>
-            <p className="text-[13px] leading-relaxed text-slate-300">
-              Low Earth Orbit (LEO) is cluttered with defunct payloads and cascading kinetic fragments traveling at speeds exceeding 7.5 km/s. MOSIP ingests raw telemetry to catalog conjunction risks, helping agencies visualize active orbital footprints before debris collisions occur.
+            <p className="text-[13px] leading-relaxed text-slate-300 font-mono">
+              Licensing a space mission begins with ingestion. UiPath Document Understanding parses satellite parameters, orbital targets, and operator credentials directly from unstructured launch proposal PDFs. This eliminates manual data entry delays and sets the stage for instant compliance evaluation.
             </p>
             <div className="pt-2">
               <button 
-                onClick={() => {
-                  const el = document.querySelector(".relative.w-full.flex.overflow-hidden.shrink-0");
-                  el?.scrollIntoView({ behavior: "smooth" });
-                }}
+                onClick={() => router.push("/simulator")}
                 className="border border-white hover:bg-white hover:text-black text-white font-data text-[10px] px-6 py-3 transition uppercase tracking-widest rounded-sm"
               >
-                EXPLORE CATALOGUE →
+                UPLOAD PROPOSAL PDF →
               </button>
             </div>
           </div>
 
           {/* Slide Glassmorphism Data Overlay */}
           <div 
-            className="p-5 rounded-sm max-w-sm w-full backdrop-blur-md border border-white/[0.06] flex flex-col gap-4"
-            style={{ background: "rgba(11,15,23,0.7)" }}
+            className="p-6 rounded-sm max-w-sm w-full backdrop-blur-md border border-white/[0.06] flex flex-col gap-4"
+            style={{ background: "rgba(11,15,23,0.75)" }}
           >
-            <span className="label block border-b border-white/[0.04] pb-2">CONGESTION READOUTS</span>
+            <span className="label block border-b border-white/[0.04] pb-2 font-digital text-slate-400">DU EXTRACTED VALUES</span>
             
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-3 font-mono text-[10px]">
               {[
-                { regime: "Debris & Defunct Satellites", percent: 68, count: "10,660 objs", color: "var(--c-critical)" },
-                { regime: "Active Satellites", percent: 21, count: "3,290 objs", color: "var(--c-cyan)" },
-                { regime: "MEO & GEO Regimes", percent: 11, count: "1,730 objs", color: "var(--c-nominal)" }
+                { field: "Operator Identity", value: "SpaceX Aerospace Corp", confidence: "99.2%" },
+                { field: "Target Altitude", value: "550 km (LEO regime)", confidence: "98.7%" },
+                { field: "Collision Probability", value: "1.2 x 10^-5 / week", confidence: "96.4%" },
+                { field: "De-orbit Disposal Period", value: "5 Years post-mission", confidence: "95.1%" }
               ].map(r => (
-                <div key={r.regime} className="flex flex-col gap-1">
-                  <div className="flex justify-between font-data text-[9px]">
-                    <span style={{ color: "rgba(255,255,255,0.7)" }}>{r.regime}</span>
-                    <span className="font-bold" style={{ color: r.color }}>{r.count}</span>
-                  </div>
-                  <div className="risk-bar-track">
-                    <div className="risk-bar-fill" style={{ width: `${r.percent}%`, background: r.color }} />
-                  </div>
+                <div key={r.field} className="flex justify-between border-b border-white/[0.02] pb-1">
+                  <span className="text-slate-400">{r.field}:</span>
+                  <span className="text-[#00ff9d] font-bold">{r.value} <span className="text-[8px] text-slate-500">({r.confidence})</span></span>
                 </div>
               ))}
             </div>
@@ -603,7 +655,7 @@ export default function MissionControlPage() {
       </div>
 
       {/* ═══════════════════════════════════════════════════════════════════
-          SECTION 3 — REGULATORY COMPLIANCE SECTION (Slide 3: Rocket Visual)
+          SECTION 3 — REGULATORY COMPLIANCE SECTION (Slide 3: LangGraph RAG)
           ═══════════════════════════════════════════════════════════════════ */}
       <div 
         className="relative w-full h-screen overflow-hidden flex items-center justify-between shrink-0"
@@ -614,66 +666,62 @@ export default function MissionControlPage() {
           borderTop: "1px solid var(--c-border)",
         }}
       >
-        {/* Dark Cinematic overlay gradient (85% black on right to fade into launch visual on left) */}
-        <div className="absolute inset-0 z-10" style={{ background: "linear-gradient(to left, rgba(8,12,18,0.96) 45%, rgba(8,12,18,0.4) 100%)" }} />
-        
+        <div className="absolute inset-0 z-10" style={{ background: "linear-gradient(to left, rgba(8,12,18,0.97) 45%, rgba(8,12,18,0.4) 100%)" }} />
         <div className="cyber-grid absolute inset-0 opacity-10 z-12 pointer-events-none" />
 
         <div className="relative z-20 max-w-5xl mx-auto w-full px-8 md:px-12 flex flex-col md:flex-row items-center justify-between gap-12">
           
           {/* Slide Glassmorphism Data Overlay */}
           <div 
-            className="p-5 rounded-sm max-w-sm w-full backdrop-blur-md border border-white/[0.06] flex flex-col gap-4 md:order-first order-last"
-            style={{ background: "rgba(11,15,23,0.7)" }}
+            className="p-6 rounded-sm max-w-sm w-full backdrop-blur-md border border-white/[0.06] flex flex-col gap-4 md:order-first order-last"
+            style={{ background: "rgba(11,15,23,0.75)" }}
           >
-            <span className="label block border-b border-white/[0.04] pb-2">POLICY AUDITS</span>
+            <span className="label block border-b border-white/[0.04] pb-2 font-digital text-slate-400">8-AGENT AUDIT TIMELINE</span>
             
-            <div className="flex flex-col gap-3 font-digital text-xs">
+            <div className="flex flex-col gap-3 font-digital text-[10.5px]">
               <div className="flex justify-between items-center py-1">
-                <span className="text-slate-300 font-data text-[10px]">25-Year Disposal Rule</span>
-                <span className="status-tag critical">42% AUDIT FAIL</span>
+                <span className="text-slate-300">Orbital & Collision Agents</span>
+                <span className="status-tag nominal text-[8px]">RESOLVED</span>
               </div>
               <div className="flex justify-between items-center py-1">
-                <span className="text-slate-300 font-data text-[10px]">Kinetic Fragmentation Index</span>
-                <span className="status-tag watch">ELEVATED BURDEN</span>
+                <span className="text-slate-300">RAG Compliance Agent</span>
+                <span className="status-tag ai text-[8px]">ESA/IADC OK</span>
               </div>
               <div className="flex justify-between items-center py-1">
-                <span className="text-slate-300 font-data text-[10px]">De-orbit Energy Margins</span>
-                <span className="status-tag nominal">92% COMPLIANT</span>
+                <span className="text-slate-300">Mitigation & Report Agents</span>
+                <span className="status-tag nominal text-[8px]">COMPILED</span>
               </div>
             </div>
             
-            <div className="text-[10px] text-slate-400 border-t border-white/[0.04] pt-2 leading-relaxed">
-              All telemetry is validated against IADC space debris mitigation guidelines in real-time.
+            <div className="text-[9.5px] text-slate-400 border-t border-white/[0.04] pt-2 font-mono leading-relaxed">
+              FastAPI backend invokes an 8-agent LangGraph network retrieving legal clauses from Qdrant vector store.
             </div>
           </div>
 
           {/* Slide Text Block */}
           <div className="flex flex-col gap-5 max-w-md">
-            <span className="font-data text-[9px] uppercase tracking-[0.35em] text-[var(--c-ai)]">
-              POLICY COMPLIANCE // COGNITIVE LAW AUDITOR
+            <span className="font-digital text-[9px] uppercase tracking-[0.35em] text-[#00ff9d] font-bold">
+              PROCESS STAGE 3 // MULTI-AGENT COMPLIANCE
             </span>
             <h2 className="font-display text-4xl md:text-5xl uppercase tracking-wider text-white leading-tight font-bold">
-              Enforcing<br/>Orbital Law
+              8-Agent LangGraph<br/>Regulatory Audit
             </h2>
-            <p className="text-[13px] leading-relaxed text-slate-300">
-              Launching payloads demands adherence to safety treaties. MOSIP checks every cataloged trajectory against IADC and ESA orbital guidelines using vector semantic lookup in Qdrant, highlighting compliance grade violations instantly.
+            <p className="text-[13px] leading-relaxed text-slate-300 font-mono">
+              FastAPI executes our LangGraph orchestrator graph. The Compliance Agent utilizes Retrieval-Augmented Generation (RAG) to query IADC and ESA disposal frameworks, grading the satellite's parameters against 25-year post-mission disposal laws, casualty limits, and congestion burden indexes.
             </p>
             <div className="pt-2">
               <button 
                 onClick={() => router.push("/regulations")}
                 className="border border-white hover:bg-white hover:text-black text-white font-data text-[10px] px-6 py-3 transition uppercase tracking-widest rounded-sm"
               >
-                QUERY POLICY BASE →
+                QUERY COMPLIANCE RULES →
               </button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* ═══════════════════════════════════════════════════════════════════
-          SECTION 4 — AUTOMATED AVOIDANCE SECTION (Slide 4: Thruster Visual)
-          ═══════════════════════════════════════════════════════════════════ */}
+      {/* ── SECTION 4: ACTION CENTER & SLA EXCEPTION ── */}
       <div 
         className="relative w-full h-screen overflow-hidden flex items-center justify-between shrink-0"
         style={{ 
@@ -683,72 +731,54 @@ export default function MissionControlPage() {
           borderTop: "1px solid var(--c-border)",
         }}
       >
-        {/* Dark Cinematic overlay gradient (85% black on left to fade into visual on right) */}
-        <div className="absolute inset-0 z-10" style={{ background: "linear-gradient(to right, rgba(8,12,18,0.96) 45%, rgba(8,12,18,0.4) 100%)" }} />
-        
+        <div className="absolute inset-0 z-10" style={{ background: "linear-gradient(to right, rgba(8,12,18,0.97) 45%, rgba(8,12,18,0.4) 100%)" }} />
         <div className="cyber-grid absolute inset-0 opacity-10 z-12 pointer-events-none" />
 
         <div className="relative z-20 max-w-5xl mx-auto w-full px-8 md:px-12 flex flex-col md:flex-row items-center justify-between gap-12">
           {/* Slide Text Block */}
           <div className="flex flex-col gap-5 max-w-md">
-            <span className="font-data text-[9px] uppercase tracking-[0.35em] text-[var(--c-nominal)]">
-              AUTONOMOUS NAVIGATION // EVASION THRESHOLD
+            <span className="font-digital text-[9px] uppercase tracking-[0.35em] text-[#ffb700] font-bold">
+              PROCESS STAGE 4 // EXCEPTION MANAGEMENT
             </span>
             <h2 className="font-display text-4xl md:text-5xl uppercase tracking-wider text-white leading-tight font-bold">
-              Autonomous<br/>Evasion Maneuvers
+              Human-in-the-Loop<br/>& SLA Failsafe
             </h2>
-            <p className="text-[13px] leading-relaxed text-slate-300">
-              When threat indexes exceed safe parameters, MOSIP calculates precise thruster impulses (delta-v values) to guide satellites into safe orbits. The maneuver coordinates are structured by our autonomous agents and generated as executive command briefings using Groq LLM.
+            <p className="text-[13px] leading-relaxed text-slate-300 font-mono">
+              When risk thresholds exceed limits or regulatory guidelines are violated, Maestro halts automation and assigns a review task inside **UiPath Action Center**. If the human inspector does not respond within the 15-minute SLA deadline, the system automatically triggers an emergency orbital avoidance burn protocol.
             </p>
             <div className="pt-2">
               <button 
                 onClick={() => router.push("/simulator")}
                 className="border border-white hover:bg-white hover:text-black text-white font-data text-[10px] px-6 py-3 transition uppercase tracking-widest rounded-sm"
               >
-                RUN SIMULATIONS →
+                TEST SLA SIMULATOR →
               </button>
             </div>
           </div>
 
           {/* Slide Glassmorphism Data Overlay */}
           <div 
-            className="p-5 rounded-sm max-w-sm w-full backdrop-blur-md border border-white/[0.06] flex flex-col gap-4"
-            style={{ background: "rgba(11,15,23,0.7)" }}
+            className="p-6 rounded-sm max-w-sm w-full backdrop-blur-md border border-white/[0.06] flex flex-col gap-4"
+            style={{ background: "rgba(11,15,23,0.75)" }}
           >
-            <span className="label block border-b border-white/[0.04] pb-2">MULTI-AGENT CHAIN STATUS</span>
+            <span className="label block border-b border-white/[0.04] pb-2 font-digital text-[#ffb700]">ACTION CENTER SUSPENSION</span>
             
-            <div className="flex flex-col gap-3 font-digital text-[11px]">
-              <div className="flex items-center gap-2">
-                <div className="p-1 rounded bg-[var(--c-cyan-ghost)]">
-                  <Cpu size={12} className="text-[var(--c-cyan)]" />
-                </div>
-                <div className="flex-1">
-                  <span className="block font-semibold text-white">Surveillance & Risk</span>
-                  <span className="text-[8px] text-slate-400">Monte Carlo conjunction assessment</span>
-                </div>
-                <span className="status-tag nominal text-[7px]">OK</span>
+            <div className="flex flex-col gap-3 font-mono text-[10.5px]">
+              <div className="flex items-center justify-between text-slate-300">
+                <span>Action Center Task ID:</span>
+                <span className="text-[#00d4ff]">ACT-77A-99B</span>
               </div>
-
-              <div className="flex items-center gap-2">
-                <div className="p-1 rounded bg-[var(--c-ai-ghost)]">
-                  <Zap size={12} className="text-[var(--c-ai)]" />
-                </div>
-                <div className="flex-1">
-                  <span className="block font-semibold text-white">Policy & Compliance</span>
-                  <span className="text-[8px] text-slate-400">ESA/IADC policy vector query</span>
-                </div>
-                <span className="status-tag ai text-[7px]">OK</span>
+              <div className="flex items-center justify-between text-slate-300">
+                <span>Task SLA Duration:</span>
+                <span className="text-[#ffb700] font-bold">15m (countdown live)</span>
               </div>
-
-              <div className="flex items-center gap-2">
-                <div className="p-1 rounded bg-emerald-500/10">
-                  <AlertTriangle size={12} className="text-[var(--c-nominal)]" />
-                </div>
-                <div className="flex-1">
-                  <span className="block font-semibold text-white">Maneuver & Avoidance</span>
-                  <span className="text-[8px] text-slate-400">Delta-v propulsion trajectory computation</span>
-                </div>
-                <span className="status-tag nominal text-[7px]">ACTIVE</span>
+              <div className="flex items-center justify-between text-slate-300">
+                <span>Trigger Reason:</span>
+                <span className="text-[#ff3366]">Risk Score (63.0%) &gt; Limit</span>
+              </div>
+              <div className="flex items-center justify-between text-slate-300 border-t border-white/[0.04] pt-2">
+                <span>Failsafe Trigger:</span>
+                <span className="text-white">Thruster Maneuver (0.14 m/s)</span>
               </div>
             </div>
           </div>

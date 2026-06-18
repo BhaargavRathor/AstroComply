@@ -1,291 +1,145 @@
-# 🚀 MOSIP — Multi-Agent Orbital Sustainability Intelligence Platform
+# 🛰️ AstroComply AI: Autonomous Space Mission Licensing & Regulatory Approval
 
-<p align="center">
-  <b>AI-Powered Orbital Sustainability Intelligence System</b><br>
-  Multi-Agent AI • RAG • Space Sustainability • Regulatory Intelligence
-</p>
+AstroComply AI is an enterprise-grade process orchestration platform designed for the **UiPath AgentHack** competition. It automates space mission licensing and satellite regulatory compliance audits by coordinating AI agents, RPA bots, Document Understanding, and human review under a unified execution plane.
 
-<p align="center">
-  <a href="https://github.com/lucifernarayan/MOSIP">Repository</a> •
-  <a href="https://mosip-1.vercel.app/">Live Demo</a>
-</p>
+By combining **FastAPI**, **LangGraph** (multi-agent graph reasoning), **Qdrant** (semantic RAG space regulations), and **Next.js** (3D orbital tracking visualizer), AstroComply AI implements a robust process that enforces space debris mitigation treaties (ESA/IADC) for pre-launch authorizations.
 
 ---
 
-## 🌍 Overview
+## 🏗️ Solution Architecture & Orchestration Flow
 
-MOSIP (Multi-Agent Orbital Sustainability Intelligence Platform) is an AI-powered platform designed to analyze satellites, evaluate orbital sustainability, assess regulatory compliance, forecast long-term risks, and generate actionable mitigation recommendations.
-
-The platform combines real satellite datasets, regulatory knowledge bases, Retrieval-Augmented Generation (RAG), and a LangGraph-powered multi-agent architecture to support sustainable space operations.
-
----
-
-## 🎯 Problem Statement
-
-The rapid increase in satellite launches and orbital debris is creating significant challenges for:
-
-* Collision avoidance
-* Orbital congestion management
-* Regulatory compliance
-* Long-term sustainability
-* End-of-life disposal planning
-
-Today these analyses are fragmented across multiple tools and expert workflows.
-
-MOSIP unifies them into a single AI-native decision-support platform.
-
----
-
-## ✨ Key Features
-
-* 🛰️ Real Satellite Intelligence
-* 🤖 Multi-Agent AI Reasoning
-* 📚 Regulatory RAG System
-* ⚠️ Collision Risk Assessment
-* 📈 Sustainability Scoring
-* 🔍 ESA & IADC Compliance Analysis
-* 📄 Automated Report Generation
-* 🌐 Interactive Mission Dashboard
-* 🚀 Real-Time Orbital Visualization
-
----
-
-## 🏗️ Architecture
+AstroComply AI models a hybrid process flow aligned with **Track 2: UiPath Maestro BPMN**:
 
 ```text
-User
- │
- ▼
-Next.js Frontend
- │
- ▼
-FastAPI Backend
- │
- ▼
-LangGraph Orchestrator
- │
- ├── Orbital Analysis Agent
- ├── Collision Risk Agent
- ├── Compliance Agent
- ├── Sustainability Agent
- ├── Forecast Agent
- ├── Mitigation Agent
- └── Report Agent
- │
- ├── PostgreSQL
- ├── Qdrant
- └── Groq LLM
+  Proposal PDF
+       │
+       ▼
+[1. Document Understanding] ──(Extract parameters)──► [2. SAP Billing Verification]
+                                                             │
+                                                        (Paid status?)
+                                                             │
+                                                ┌────────────┴────────────┐
+                                                ▼ (No)                    ▼ (Yes)
+                                          [Billing Block]         [3. LangGraph Safety Audit]
+                                                                          │
+                                                                   (Risk threshold /
+                                                                   Violations check)
+                                                                          │
+                                                ┌────────────┴────────────┐
+                                                ▼ (Risk / Violation)      ▼ (Compliant)
+                                       [4. Action Center Task]            │
+                                                │                         │
+                                         (Approve / SLA Timeout)          │
+                                                │                         │
+                                                ├─────────────────────────┘
+                                                ▼
+                                    [5. RPA Asset Registration]
+                                                │
+                                                ▼
+                                    [6. Licensing Approved]
 ```
 
----
-
-## 🤖 Multi-Agent System
-
-| Agent                  | Responsibility                    |
-| ---------------------- | --------------------------------- |
-| Supervisor Agent       | Task orchestration and routing    |
-| Orbital Analysis Agent | Orbit classification and analysis |
-| Collision Risk Agent   | Collision probability assessment  |
-| Compliance Agent       | ESA/IADC compliance evaluation    |
-| Sustainability Agent   | Sustainability scoring            |
-| Forecast Agent         | Long-term orbital prediction      |
-| Mitigation Agent       | Risk mitigation recommendations   |
-| Report Agent           | Executive and technical reports   |
-
----
-
-## 📚 RAG Pipeline
-
-```text
-ESA Documents
-IADC Guidelines
-ISO Standards
-       │
-       ▼
-Document Chunking
-       │
-       ▼
-Embeddings (BAAI/bge-small-en-v1.5)
-       │
-       ▼
-Qdrant Vector Database
-       │
-       ▼
-Semantic Retrieval
-       │
-       ▼
-Groq LLM
-       │
-       ▼
-Grounded Regulatory Answers
-```
-
----
-
-## 🗄️ Data Infrastructure
-
-### PostgreSQL
-
-Stores:
-
-* 15,680 Satellites
-* 15,680 Risk Assessments
-* 31,360 Orbital Records
-* Conjunction Events
-* Ingestion Logs
-
-### Qdrant
-
-Stores:
-
-* ESA Regulations
-* IADC Guidelines
-* Regulatory Embeddings
-* Compliance Knowledge Base
-
-### Neo4j
-
-Planned for future relationship analysis.
-
----
-
-## 📊 Dataset Overview
-
-| Metric           | Count  |
-| ---------------- | ------ |
-| Satellites       | 15,680 |
-| Risk Assessments | 15,680 |
-| Orbital Records  | 31,360 |
+1. **UiPath Document Understanding**: Ingests launch proposal PDF documents, automatically extracting operator info, target altitude, inclination, eccentricity, and debris metrics.
+2. **SAP License Fee Check**: Verifies if the operator's account has outstanding licensing balances. Delinquent accounts trigger a billing block.
+3. **LangGraph Multi-Agent Safety Audit**: FastAPI executes a LangGraph network of 8 specialized agents (Orbital, Collision, Compliance, Sustainability, Forecast, Mitigation, Documentation) querying ESA/IADC regulatory clauses semantically via Qdrant.
+4. **UiPath Action Center & SLA Failsafe**: Launches a human inspector review form if risk > threshold or regulations are violated. A 15-minute SLA countdown is configured; if the SLA is breached, the system auto-escalates to trigger autonomous thruster avoidance burn commands.
+5. **UiPath RPA Asset Registration**: RPA bots automatically register approved satellites in the international space assets registry.
 
 ---
 
 ## 🛠️ Technology Stack
 
-### Frontend
-
-* Next.js
-* TypeScript
-* TailwindCSS
-* Globe.gl
-* Framer Motion
-
-### Backend
-
-* FastAPI
-* Python
-
-### AI Stack
-
-* LangGraph
-* LangChain
-* Groq
-* Llama 3.3 70B
-
-### Databases
-
-* PostgreSQL
-* Qdrant
+* **Orchestration / Low-Code Layer**: UiPath Automation Cloud (Maestro BPMN, Action Center, Document Understanding, API Workflows, RPA Bots).
+* **Multi-Agent Reasoning**: LangGraph, LangChain, Groq (Llama 3.3 70B).
+* **Semantic Vector Search (RAG)**: Qdrant Database.
+* **Metadata & Logs Store**: PostgreSQL Database.
+* **Backend API Gateway**: FastAPI (Python).
+* **Interactive Control Deck**: Next.js (TypeScript, TailwindCSS, Framer Motion, Globe.gl 3D visualization, Recharts).
 
 ---
 
-## 🚀 Local Setup
+## 💻 Setup & Installation
 
+### Prerequisites
+- Python 3.10+
+- Node.js 18+
+- npm
+
+### 1. Clone the Repository
 ```bash
-git clone https://github.com/lucifernarayan/MOSIP.git
-
-cd MOSIP
-
-pip install -r requirements.txt
-
-cd frontend
-npm install
+git clone https://github.com/lucifernarayan/MOSIP1.git
+cd MOSIP1
 ```
 
-### Backend
-
-```bash
-uvicorn backend.api.main:app --reload
-```
-
-### Frontend
-
-```bash
-cd frontend
-
-npm run dev
-```
-
----
-
-## 🔐 Environment Variables
-
+### 2. Configure Environment Variables
+Create a `.env` file in the root folder:
 ```env
-GROQ_API_KEY=your_groq_key
-
-POSTGRES_USER=mosip
-POSTGRES_PASSWORD=your_password
-POSTGRES_DB=mosip
-
+GROQ_API_KEY=your_groq_api_key_here
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=mosip
+DB_USER=postgres
+DB_PASSWORD=
 QDRANT_HOST=localhost
 QDRANT_PORT=6333
 ```
 
+Create a `frontend/.env.local` file:
+```env
+NEXT_PUBLIC_MOSIP_API_BASE=http://localhost:8000
+```
+
+### 3. Spin up Backend
+Install dependencies and run the FastAPI server:
+```bash
+pip install -r requirements.txt
+python -m uvicorn backend.api.main:app --reload --host 127.0.0.1 --port 8000
+```
+*Note: If PostgreSQL is offline, the API includes graceful fallback layers to serve high-fidelity mock datasets, ensuring zero-crash client evaluation.*
+
+### 4. Spin up Frontend
+Install package dependencies and run Next.js:
+```bash
+cd frontend
+npm install
+npm run dev
+```
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
 ---
 
-## 🌐 Live Demo
+## 🚀 Running the Orchestration Simulator
 
-https://mosip-1.vercel.app/
+### UI Dashboard Simulation
+1. Navigate to [http://localhost:3000/simulator](http://localhost:3000/simulator).
+2. Click the **UiPath Orchestration** tab.
+3. Select a simulated PDF proposal payload (**Low Risk**, **High Risk**, or **Delinquent Billing**).
+4. Click **Start Orchestration** to visualize the live stepper status, terminal logs, Action Center task triggers, live SLA countdown, and RPA registration.
 
----
+### Command-Line Integration Runner
+A python CLI runner is included to test the API integrations headlessly. You can pass arguments to simulate different process lifecycles:
+```bash
+# Scenario 1: Compliant Launch (Auto-Approves & Registers)
+python uipath_workflow_sim.py 1
 
-## 📷 Screenshots
+# Scenario 2: High Risk (Held in Action Center, manual Approval)
+python uipath_workflow_sim.py 2 A
 
-Add screenshots here:
+# Scenario 2: High Risk (SLA breach / Timeout, auto-escalates avoidance burns)
+python uipath_workflow_sim.py 2 W
 
-```text
-docs/images/dashboard.png
-docs/images/satellite-analysis.png
-docs/images/regulation-search.png
-docs/images/report-generation.png
+# Scenario 3: Unpaid Operator (Fails SAP check)
+python uipath_workflow_sim.py 3
 ```
 
 ---
 
-## 🔮 Future Roadmap
+## 🤖 Coding Agent Built: Bonus Points
+AstroComply AI was built and integrated with the help of **Antigravity (a Gemini 3.5 Flash powered autonomous coding agent)** under the **UiPath for Coding Agents** workflow. The agent was used to construct endpoints, manage background tasks, formulate mock billing fallbacks, and rebrand Next.js dashboard UI views. 
 
-* Neo4j Relationship Intelligence
-* Real-Time Space-Track Integration
-* Orbital Propagation Engine
-* Autonomous Mitigation Planning
-* Multi-Constellation Analysis
-* Sustainability Benchmarking
+Details of this coding agent cooperation are featured in our devpost submission video!
 
----
-
-## 👥 Team
-
-NITA Knights built MOSIP, a multi-agent AI platform transforming how satellites are monitored, assessed, and managed for long-term orbital sustainability.
 ---
 
 ## 📄 License
-
-MIT License
-
----
-
-## 🙏 Acknowledgements
-
-* ESA
-* IADC
-* LangGraph
-* LangChain
-* Groq
-* Qdrant
-* FastAPI
-* Next.js
-
----
-
-<p align="center">
-<b>Building the Future of Sustainable Space Operations 🚀</b>
-</p>
+Licensed under the Apache License, Version 2.0.

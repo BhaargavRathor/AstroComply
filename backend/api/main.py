@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from backend.api.routes import satellites, metrics, analysis, health, regulations
+from backend.api.routes import satellites, metrics, analysis, health, regulations, uipath
 from backend.api.routes import assess
 
 app = FastAPI(
@@ -35,5 +35,12 @@ app.include_router(
     assess.router,
     prefix="/assess",
     tags=["🤖 Multi-Agent Intelligence"],
+)
+
+# ── UiPath Orchestration Simulator routes ─────────────────────────────────────
+app.include_router(
+    uipath.router,
+    prefix="/uipath",
+    tags=["UiPath Orchestration"],
 )
 

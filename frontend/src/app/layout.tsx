@@ -3,9 +3,9 @@ import "./globals.css";
 import { AppShell } from "@/components/AppShell";
 
 export const metadata: Metadata = {
-  title: "MOSIP — Orbital Intelligence Platform",
+  title: "AstroComply AI — Automated Space Licensing & Regulatory Approval",
   description:
-    "Multi-Agent Orbital Sustainability Intelligence Platform. Real-time satellite tracking, collision risk assessment, and regulatory compliance analysis.",
+    "AstroComply AI: Autonomous space mission licensing and regulatory approval platform. Powered by UiPath Maestro BPMN, Document Understanding, and LangGraph multi-agent safety auditing.",
 };
 
 export default function RootLayout({

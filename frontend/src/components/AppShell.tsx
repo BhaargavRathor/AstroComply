@@ -170,13 +170,13 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               className="font-display tracking-[0.22em] text-[13px]"
               style={{ color: "var(--t-primary)", letterSpacing: "0.22em" }}
             >
-              MOSIP
+              AstroComply AI
             </span>
             <span
               className="hidden sm:block font-data text-[8px] tracking-[0.3em] uppercase"
               style={{ color: "var(--t-meta)" }}
             >
-              ORBITAL INTELLIGENCE PLATFORM
+              Automated Space Licensing Platform
             </span>
           </div>
 
