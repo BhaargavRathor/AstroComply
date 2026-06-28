@@ -37,7 +37,7 @@ errors   = 0
 
 with engine.begin() as conn:
 
-    for sat in satellites:
+    for sat in satellites[:150]:
         try:
             norad_id    = sat.get("NORAD_CAT_ID")
             mean_motion = sat.get("MEAN_MOTION")
