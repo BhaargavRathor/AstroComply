@@ -67,8 +67,8 @@ AstroComply AI models a hybrid process flow aligned with **Track 2: UiPath Maest
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/lucifernarayan/MOSIP1.git
-cd MOSIP1
+git clone https://github.com/BhaargavRathor/AstroComply.git
+cd AstroComply
 ```
 
 ### 2. Configure Environment Variables
