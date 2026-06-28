@@ -1,0 +1,68 @@
+<Activity mc:Ignorable="sap sap2010" x:Class="Main" mva:VisualBasic.Settings="{x:Null}" x:TypeArguments="x:Object"
+  xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities"
+  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+  xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities"
+  xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation"
+  xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation"
+  xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib"
+  xmlns:ui="http://schemas.uipath.com/workflow/activities"
+  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <scg:List x:TypeArguments="Activity" Capacity="20">
+    <Sequence sap:VirtualizedContainerService.HintSize="633,1415" sap2010:WorkflowViewState.IdRef="Sequence_1">
+      <Sequence.Variables>
+        <Variable x:TypeArguments="x:String" Default="http://localhost:8000" Name="ApiBaseUrl" />
+        <Variable x:TypeArguments="x:String" Default="operator_spacex_88" Name="OperatorId" />
+        <Variable x:TypeArguments="x:String" Default="Starlink-V2-BPMN" Name="ObjectName" />
+        <Variable x:TypeArguments="x:String" Name="JobId" />
+        <Variable x:TypeArguments="x:String" Name="JobStatus" />
+        <Variable x:TypeArguments="x:Int32" Default="600" Name="Altitude" />
+        <Variable x:TypeArguments="x:Double" Default="53.0" Name="Inclination" />
+        <Variable x:TypeArguments="x:Double" Name="RiskScore" />
+        <Variable x:TypeArguments="x:Boolean" Name="PaymentVerified" />
+        <Variable x:TypeArguments="x:String" Name="RegistrationId" />
+      </Sequence.Variables>
+      
+      <!-- LOG START -->
+      <ui:LogMessage DisplayName="Log Start" sap:VirtualizedContainerService.HintSize="591,91" Level="Info" Message="[&quot;Starting AstroComply AI Orchestration Flow...&quot;]" />
+      
+      <!-- STEP 1: DU INGESTION -->
+      <ui:Comment sap:VirtualizedContainerService.HintSize="591,74" Text="Step 1: Ingest Launch Proposal PDF via UiPath Document Understanding. Extracts OperatorId, ObjectName, Altitude, Inclination." />
+      
+      <!-- STEP 2: SAP BILLING CHECK -->
+      <Sequence DisplayName="Step 2: SAP Billing Check" sap:VirtualizedContainerService.HintSize="591,224">
+        <ui:LogMessage DisplayName="Log SAP check" sap:VirtualizedContainerService.HintSize="334,91" Level="Info" Message="[&quot;Querying SAP Billing DB for OperatorId: &quot; + OperatorId]" />
+        <!-- Mock HTTP Call to check-fee -->
+        <ui:Comment sap:VirtualizedContainerService.HintSize="334,55" Text="HTTP GET Request to ApiBaseUrl + '/uipath/sap/check-fee/' + OperatorId" />
+      </Sequence>
+      
+      <!-- STEP 3: SUBMIT AUDIT -->
+      <Sequence DisplayName="Step 3: Submit Audit" sap:VirtualizedContainerService.HintSize="591,224">
+        <ui:LogMessage DisplayName="Log Submit" sap:VirtualizedContainerService.HintSize="334,91" Level="Info" Message="[&quot;Dispatching FastAPI audit for object: &quot; + ObjectName]" />
+        <!-- Mock HTTP Call to submit job -->
+        <ui:Comment sap:VirtualizedContainerService.HintSize="334,55" Text="HTTP POST Request to ApiBaseUrl + '/uipath/job/submit' with parameters JSON payload" />
+      </Sequence>
+      
+      <!-- STEP 4: POLL STATUS -->
+      <Sequence DisplayName="Step 4: Poll Status Loop" sap:VirtualizedContainerService.HintSize="591,224">
+        <ui:LogMessage DisplayName="Log Polling" sap:VirtualizedContainerService.HintSize="334,91" Level="Info" Message="[&quot;Polling audit status for JobId: &quot; + JobId]" />
+        <!-- Loop checking status until status in (APPROVED, ACTION_CENTER, ESCALATED) -->
+        <ui:Comment sap:VirtualizedContainerService.HintSize="334,55" Text="HTTP GET Request to ApiBaseUrl + '/uipath/job/status/' + JobId inside a loop" />
+      </Sequence>
+      
+      <!-- STEP 5: DECISION BRANCH -->
+      <Sequence DisplayName="Step 5: Decision &amp; Action Center / RPA" sap:VirtualizedContainerService.HintSize="591,224">
+        <!-- FlowDecision: If JobStatus = 'ACTION_CENTER' -->
+        <ui:Comment sap:VirtualizedContainerService.HintSize="334,132" Text="If Status == 'ACTION_CENTER', spawn UiPath Action Center Form Task.&#xA;If Form Approved, call approve API and proceed.&#xA;If SLA (15 min) Timer breaches, trigger escalate API to execute avoidance burns.&#xA;Else (Status == 'APPROVED'), proceed directly." />
+      </Sequence>
+      
+      <!-- STEP 6: RPA REGISTER -->
+      <Sequence DisplayName="Step 6: RPA Registration" sap:VirtualizedContainerService.HintSize="591,224">
+        <ui:LogMessage DisplayName="Log Registration" sap:VirtualizedContainerService.HintSize="334,91" Level="Info" Message="[&quot;Triggering RPA bot to register satellite in registry...&quot;]" />
+        <!-- Mock HTTP Call to register-asset -->
+        <ui:Comment sap:VirtualizedContainerService.HintSize="334,55" Text="HTTP POST Request to ApiBaseUrl + '/uipath/sap/register-asset'" />
+      </Sequence>
+
+      <ui:LogMessage DisplayName="Log End" sap:VirtualizedContainerService.HintSize="591,91" Level="Info" Message="[&quot;AstroComply AI Orchestration Flow completed. Registration: &quot; + RegistrationId]" />
+    </Sequence>
+  </scg:List>
+</Activity>
